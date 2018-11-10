@@ -1,0 +1,232 @@
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix base:  <http://group-e/ontology> .
+
+<http://group-e/ontologysecondary school type>
+        a             owl:Class ;
+        rdfs:comment  "secondary school type"@en , "secondary school type" ;
+        rdfs:label    "secondary school type"@en , "secondary school type" .
+
+base:latitude  a     owl:DatatypeProperty ;
+        rdfs:domain  base:geoHive ;
+        rdfs:label   "latitude"@en , "latitude" ;
+        rdfs:range   xsd:float .
+
+<http://group-e/ontologytype of school>
+        a             owl:Class ;
+        rdfs:comment  "type of school"@en , "type of school" ;
+        rdfs:label    "type of school"@en , "type of school" ;
+        owl:oneOf     ( <http://group-e/ontologyprimary school type> <http://group-e/ontologysecondary school type> <http://group-e/ontologycommunity school type> <http://group-e/ontologycommunity college type> ) .
+
+base:smallerThan  a    owl:TransitiveProperty ;
+        rdfs:comment   "conties having smallerThan area than this one"@en , "conties having smallerThan area than this one" ;
+        rdfs:domain    base:County ;
+        rdfs:label     "smallerThan"@en , "smallerThan" ;
+        rdfs:range     base:County ;
+        owl:inverseOf  base:biggerThan .
+
+base:biggerThan  a     owl:TransitiveProperty ;
+        rdfs:comment   "conties having larger area than this one"@en , "conties having larger area than this one" ;
+        rdfs:domain    base:County ;
+        rdfs:label     "biggerThan"@en , "biggerThan" ;
+        rdfs:range     base:County ;
+        owl:inverseOf  base:smallerThan .
+
+<http://group-e/ontologyprimary school type>
+        a             owl:Class ;
+        rdfs:comment  "primary school type"@en , "primary school type" ;
+        rdfs:label    "primary school type"@en , "primary school type" .
+
+base:school  a           owl:Class ;
+        rdfs:comment     "Ireland schools"@en , "Ireland schools" ;
+        rdfs:label       "School" ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   base:addressLine1
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   <http://group-e/ontologyLocal Authority>
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   base:addressLine2
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   <http://group-e/ontologyEIR code>
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   base:addressLine3
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   base:schoolType
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   <http://group-e/ontologySchool Roll no>
+                         ] .
+
+base:geoHive  a          owl:Class ;
+        rdfs:comment     "decribes counties in the country of Ireland"@en , "decribes counties in the country of Ireland" ;
+        rdfs:label       "decribes counties in the country of Ireland"@en , "decribes counties in the country of Ireland" , "Locations" ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   base:longitude
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   base:latitude
+                         ] .
+
+base:addressLine3  a  owl:DatatypeProperty ;
+        rdfs:comment  "address line 3"@en , "address line 3" ;
+        rdfs:domain   base:school ;
+        rdfs:label    "address line 3"@en , "address line 3" ;
+        rdfs:range    xsd:string .
+
+<http://group-e/ontologySchool Roll no>
+        a             owl:DatatypeProperty ;
+        rdfs:comment  "School Roll no"@en , "School Roll no" ;
+        rdfs:domain   base:school ;
+        rdfs:label    "School Roll no"@en , "School Roll no" ;
+        rdfs:range    xsd:string .
+
+<http://group-e/ontologyLocal Authority>
+        a             owl:DatatypeProperty ;
+        rdfs:comment  "Local Authority"@en , "Local Authority" ;
+        rdfs:domain   base:school ;
+        rdfs:label    "Local Authority"@en , "Local Authority" ;
+        rdfs:range    xsd:string .
+
+base:longitude  a     owl:DatatypeProperty ;
+        rdfs:comment  "longitude"@en , "longitude" ;
+        rdfs:domain   base:geoHive ;
+        rdfs:range    xsd:float .
+
+<http://group-e/ontologycommunity college type>
+        a             owl:Class ;
+        rdfs:comment  "community college type"@en , "community college type" ;
+        rdfs:label    "community college type"@en , "community college type" .
+
+base:addressLine2  a  owl:DatatypeProperty ;
+        rdfs:comment  "address line 2"@en , "address line 2" ;
+        rdfs:domain   base:school ;
+        rdfs:label    "address line 2"@en , "address line 2" ;
+        rdfs:range    xsd:string .
+
+<http://group-e/ontologycommunity school type>
+        a             owl:Class ;
+        rdfs:comment  "community school type"@en , "community school type" ;
+        rdfs:label    "community school type"@en , "community school type" .
+
+<http://group-e/ontologycommunity college>
+        a                 owl:Class ;
+        rdfs:comment      "community college of Ireland"@en , "community college of Ireland" ;
+        rdfs:label        "community college of Ireland"@en , "community college of Ireland" ;
+        rdfs:subClassOf   base:school ;
+        rdfs:subClassOf   [ a               owl:Restriction ;
+                            owl:hasValue    <http://group-e/ontologycommunity college type> ;
+                            owl:onProperty  base:schoolType
+                          ] ;
+        owl:disjointWith  <http://group-e/ontologysecondary school> , <http://group-e/ontologycommunity school> , <http://group-e/ontologyprimary school> .
+
+base:inCounty  a       owl:ObjectProperty ;
+        rdfs:comment   "this school is in this particular county area"@en , "this school is in this particular county area" ;
+        rdfs:domain    base:school ;
+        rdfs:label     "this school is in this particular county area"@en , "this school is in this particular county area" ;
+        rdfs:range     base:County ;
+        owl:inverseOf  base:hasSchools .
+
+<http://group-e/ontologycommunity school>
+        a                 owl:Class ;
+        rdfs:comment      "community school of Ireland"@en , "community school of Ireland" ;
+        rdfs:label        "community school of Ireland" , "community school of Ireland"@en ;
+        rdfs:subClassOf   base:school ;
+        rdfs:subClassOf   [ a               owl:Restriction ;
+                            owl:hasValue    <http://group-e/ontologycommunity school type> ;
+                            owl:onProperty  base:schoolType
+                          ] ;
+        owl:disjointWith  <http://group-e/ontologycommunity college> , <http://group-e/ontologyprimary school> , <http://group-e/ontologysecondary school> .
+
+base:addressLine1  a  owl:DatatypeProperty ;
+        rdfs:comment  "address line 1"@en , "address line 1" ;
+        rdfs:domain   base:school ;
+        rdfs:label    "address line 1"@en , "address line 1" ;
+        rdfs:range    xsd:string .
+
+base:   a             owl:Ontology ;
+        rdfs:comment  "Ontology describing different schools in Dublin" , "Ontology describing different schools in Dublin"@en ;
+        rdfs:label    "ontology describing different schools in Dublin"@en , "ontology describing different schools in Dublin" ;
+        <http://purl.org/dc/terms/contributor>
+                "Paras" , "Pavan" , "Aditya" , "Amogh" , "Shubham" ;
+        <http://purl.org/dc/terms/date>
+                "23-Nov-2018" ;
+        <http://purl.org/dc/terms/description>
+                "Ontology describing different schools in Dublin" .
+
+base:nearby  a        owl:SymmetricProperty ;
+        rdfs:comment  "nearby counties"@en , "nearby counties" ;
+        rdfs:domain   base:County ;
+        rdfs:label    "nearby"@en , "nearby" ;
+        rdfs:range    base:County .
+
+<http://group-e/ontologyEIR code>
+        a             owl:DatatypeProperty ;
+        rdfs:comment  "EIR code"@en , "EIR code" ;
+        rdfs:domain   base:school ;
+        rdfs:label    "EIR code"@en , "EIR code" ;
+        rdfs:range    xsd:string .
+
+base:schoolType  a    owl:DatatypeProperty ;
+        rdfs:comment  "type of school"@en , "type of school" ;
+        rdfs:domain   base:school ;
+        rdfs:label    "type of school"@en , "type of school" ;
+        rdfs:range    <http://group-e/ontologytype of school> .
+
+base:County  a           owl:Class ;
+        rdfs:comment     "Ireland Counties"@en , "Ireland Counties" ;
+        rdfs:label       "Ireland County"@en , "Ireland County" ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:int ;
+                           owl:onProperty   base:area
+                         ] .
+
+<http://group-e/ontologysecondary school>
+        a                 owl:Class ;
+        rdfs:comment      "secondary school of Ireland"@en , "secondary school of Ireland" ;
+        rdfs:label        "secondary school of Ireland"@en , "secondary school of Ireland" ;
+        rdfs:subClassOf   base:school ;
+        rdfs:subClassOf   [ a               owl:Restriction ;
+                            owl:hasValue    <http://group-e/ontologysecondary school type> ;
+                            owl:onProperty  base:schoolType
+                          ] ;
+        owl:disjointWith  <http://group-e/ontologyprimary school> , <http://group-e/ontologycommunity school> , <http://group-e/ontologycommunity college> .
+
+base:area  a          owl:DatatypeProperty ;
+        rdfs:comment  "area of a county"@en , "area of a county" ;
+        rdfs:domain   base:County ;
+        rdfs:label    "area of county"@en , "area of county" ;
+        rdfs:range    xsd:float .
+
+<http://group-e/ontologyprimary school>
+        a                 owl:Class ;
+        rdfs:comment      "primary school of Ireland" , "primary school of Ireland"@en ;
+        rdfs:label        "primary school of Ireland"@en , "primary school of Ireland" ;
+        rdfs:subClassOf   base:school ;
+        rdfs:subClassOf   [ a               owl:Restriction ;
+                            owl:hasValue    <http://group-e/ontologyprimary school type> ;
+                            owl:onProperty  base:schoolType
+                          ] ;
+        owl:disjointWith  <http://group-e/ontologysecondary school> , <http://group-e/ontologycommunity college> , <http://group-e/ontologycommunity school> .
+
+base:hasSchools  a     owl:ObjectProperty ;
+        rdfs:comment   "county has this school"@en , "county has this school" ;
+        rdfs:domain    base:County ;
+        rdfs:label     "county has this school"@en , "county has this school" ;
+        rdfs:range     base:school ;
+        owl:inverseOf  base:inCounty .
