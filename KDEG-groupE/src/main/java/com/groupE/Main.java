@@ -8,29 +8,49 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.jena.ontology.DatatypeProperty;
+import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.Ontology;
 import org.apache.jena.ontology.SymmetricProperty;
 import org.apache.jena.ontology.TransitiveProperty;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
+
+import com.esri.core.geometry.Geometry;
+import com.esri.core.geometry.OperatorImportFromWkt;
+import com.esri.core.geometry.OperatorIntersects;
+import com.esri.core.geometry.OperatorWithin;
+import com.esri.core.geometry.Point;
+import com.esri.core.geometry.SpatialReference;
+import com.esri.core.geometry.WktImportFlags;
+
 
 public class Main {
 	public static String firstDatasetOnline="http://data.geohive.ie/dumps/county/default.ttl";
 	public static String firstDatasetLocal="county-default.ttl";
+	public static String secondDatasetLocal="resource\\EducationUT-output-minimal.ttl";
 	public static String groupE_Ontology="resource\\groupE_Ontology.ttl";
 	
 	public static String link="http://group-e/ontology";
-	public static String base="http://group-e/ontology";
+	public static String base="http://group-e/ontology#";
 	public static void main(String[] args) throws Exception {
 		Files.copy( URI.create(firstDatasetOnline).toURL().openStream(), Paths.get(firstDatasetLocal),StandardCopyOption.REPLACE_EXISTING);
 		createOntology();
@@ -73,6 +93,31 @@ public class Main {
         location.addSuperClass(model.createCardinalityRestriction(null, latitude, 1));
         location.addSuperClass(model.createCardinalityRestriction(null, longitude, 1));
         
+        DatatypeProperty addressLine1 = model.createDatatypeProperty(base + "addressLine1");
+        addressLine1.addLabel("address line 1", null);addressLine1.addLabel("address line 1", "en");
+        addressLine1.addComment("address line 1", null);addressLine1.addComment("address line 1", "en");
+        addressLine1.setDomain(location);
+        addressLine1.setRange(XSD.xstring);
+        //school.addSuperClass(model.createCardinalityRestriction(null, addressLine1, 1));
+        DatatypeProperty addressLine2 = model.createDatatypeProperty(base + "addressLine2");
+        addressLine2.addLabel("address line 2", null);addressLine2.addLabel("address line 2", "en");
+        addressLine2.addComment("address line 2", null);addressLine2.addComment("address line 2", "en");
+        addressLine2.setDomain(location);
+        addressLine2.setRange(XSD.xstring);
+        //school.addSuperClass(model.createCardinalityRestriction(null, addressLine2, 1));
+        DatatypeProperty addressLine3 = model.createDatatypeProperty(base + "addressLine3");
+        addressLine3.addLabel("address line 3", null);addressLine3.addLabel("address line 3", "en");
+        addressLine3.addComment("address line 3", null);addressLine3.addComment("address line 3", "en");
+        addressLine3.setDomain(location);
+        addressLine3.setRange(XSD.xstring);
+        //school.addSuperClass(model.createCardinalityRestriction(null, addressLine3, 1));
+        DatatypeProperty eirCode = model.createDatatypeProperty(base + "EIRcode");
+        eirCode.addLabel("EIR code", null);eirCode.addLabel("EIR code", "en");
+        eirCode.addComment("EIR code", null);eirCode.addComment("EIR code", "en");
+        eirCode.setDomain(location);
+        eirCode.setRange(XSD.xstring);
+        //school.addSuperClass(model.createCardinalityRestriction(null, eirCode, 1));
+        
         OntClass county = model.createClass(base + "County");
         county.addLabel("Ireland County", null);county.addLabel("Ireland County", "en");
         county.addComment("Ireland Counties", null);county.addComment("Ireland Counties", "en");
@@ -82,11 +127,11 @@ public class Main {
         countyArea.setDomain(county);
         countyArea.setRange(XSD.xfloat);
         county.addSuperClass(model.createCardinalityRestriction(null, countyArea, 1));
-        SymmetricProperty nearby = model.createSymmetricProperty(base + "nearby");
-        nearby.addLabel("nearby", null);nearby.addLabel("nearby", "en");
-        nearby.addComment("nearby counties", null);nearby.addComment("nearby counties", "en");
-        nearby.setDomain(county);
-        nearby.setRange(county);
+        SymmetricProperty sharesBoundaryWith = model.createSymmetricProperty(base + "sharesBoundaryWith");
+        sharesBoundaryWith.addLabel("shares boundary with", null);sharesBoundaryWith.addLabel("shares boundary with", "en");
+        sharesBoundaryWith.addComment("shares boundary with counties", null);sharesBoundaryWith.addComment("shares boundary with counties", "en");
+        sharesBoundaryWith.setDomain(county);
+        sharesBoundaryWith.setRange(county);
         TransitiveProperty biggerThan = model.createTransitiveProperty(base + "biggerThan");
         biggerThan.addLabel("biggerThan", null);biggerThan.addLabel("biggerThan", "en");
         biggerThan.addComment("conties having larger area than this one", null);biggerThan.addComment("conties having larger area than this one", "en");
@@ -100,96 +145,66 @@ public class Main {
         biggerThan.addInverseOf(smallerThan);smallerThan.addInverseOf(biggerThan);
         /*-----------------------------------------------------------------------------------------------------------------------------------------------------------*/
         
-        OntClass primarySchoolType = model.createClass(base + "primary school type");
-        primarySchoolType.addComment("primary school type",null);primarySchoolType.addComment("primary school type","en");
-        primarySchoolType.addLabel("primary school type",null);primarySchoolType.addLabel("primary school type","en");
-        OntClass secondarySchoolType = model.createClass(base + "secondary school type");
-        secondarySchoolType.addComment("secondary school type",null);secondarySchoolType.addComment("secondary school type","en");
-        secondarySchoolType.addLabel("secondary school type",null);secondarySchoolType.addLabel("secondary school type","en");
-        OntClass communitySchoolType = model.createClass(base + "community school type");
-        communitySchoolType.addComment("community school type",null);communitySchoolType.addComment("community school type","en");
-        communitySchoolType.addLabel("community school type",null);communitySchoolType.addLabel("community school type","en");
-        OntClass communityCollegeType = model.createClass(base + "community college type");
-        communityCollegeType.addComment("community college type",null);communityCollegeType.addComment("community college type","en");
-        communityCollegeType.addLabel("community college type",null);communityCollegeType.addLabel("community college type","en");
-        OntClass type = model.createEnumeratedClass(base + "type of school", model.createList(new RDFNode[]{primarySchoolType, secondarySchoolType, communitySchoolType,communityCollegeType}));
-        type.addLabel("type of school", null);type.addLabel("type of school", "en");
-        type.addComment("type of school", null);type.addComment("type of school", "en");
-        /*-----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+        OntClass schoolType = model.createClass(base + "schoolType");
+        schoolType.addComment("school type",null);schoolType.addComment("school type","en");
+        schoolType.addLabel("school type",null);schoolType.addLabel("school type","en");
         
-        OntClass primarySchool = model.createClass(base + "primary school");
+        OntClass primarySchool = model.createClass(base + "primarySchool");
         primarySchool.addComment("primary school of Ireland",null);primarySchool.addComment("primary school of Ireland","en");
         primarySchool.addLabel("primary school of Ireland",null);primarySchool.addLabel("primary school of Ireland","en");
-        OntClass secondarySchool = model.createClass(base + "secondary school");
+        OntClass secondarySchool = model.createClass(base + "secondarySchool");
         secondarySchool.addComment("secondary school of Ireland",null);secondarySchool.addComment("secondary school of Ireland","en");
         secondarySchool.addLabel("secondary school of Ireland",null);secondarySchool.addLabel("secondary school of Ireland","en");
-        OntClass communitySchool = model.createClass(base + "community school");
+        OntClass communityInstitute = model.createClass(base + "communityInstitute");
+        communityInstitute.addComment("community institute of Ireland",null);communityInstitute.addComment("community institute of Ireland","en");
+        communityInstitute.addLabel("community institute of Ireland",null);communityInstitute.addLabel("community institute of Ireland","en");
+        OntClass communitySchool = model.createClass(base + "communitySchool");
         communitySchool.addComment("community school of Ireland",null);communitySchool.addComment("community school of Ireland","en");
         communitySchool.addLabel("community school of Ireland",null);communitySchool.addLabel("community school of Ireland","en");
-        OntClass communityCollege = model.createClass(base + "community college");
+        OntClass communityCollege = model.createClass(base + "communityCollege");
         communityCollege.addComment("community college of Ireland",null);communityCollege.addComment("community college of Ireland","en");
         communityCollege.addLabel("community college of Ireland",null);communityCollege.addLabel("community college of Ireland","en");
-        primarySchool.addDisjointWith(secondarySchool); primarySchool.addDisjointWith(communitySchool); primarySchool.addDisjointWith(communityCollege);
-        secondarySchool.addDisjointWith(primarySchool); secondarySchool.addDisjointWith(communitySchool); secondarySchool.addDisjointWith(communityCollege);
-        communitySchool.addDisjointWith(secondarySchool); communitySchool.addDisjointWith(primarySchool); communitySchool.addDisjointWith(communityCollege);
-        communityCollege.addDisjointWith(secondarySchool); communityCollege.addDisjointWith(communitySchool); communityCollege.addDisjointWith(primarySchool);
+        communityCollege.addSuperClass(communityInstitute);communitySchool.addSuperClass(communityInstitute);
+        OntClass others = model.createClass(base + "otherInstitute");
+        others.addComment("institute of Ireland",null);others.addComment("institute of Ireland","en");
+        others.addLabel("institute of Ireland",null);others.addLabel("institute of Ireland","en");
+        
+        primarySchool.addDisjointWith(secondarySchool);  secondarySchool.addDisjointWith(primarySchool); 
+        others.addDisjointWith(primarySchool);others.addDisjointWith(secondarySchool);others.addDisjointWith(communityCollege);others.addDisjointWith(communityInstitute);
+        
+        primarySchool.addSuperClass(schoolType);
+        secondarySchool.addSuperClass(schoolType);
+        communityInstitute.addSuperClass(schoolType);
+        communityInstitute.addSuperClass(schoolType);
+        others.addSuperClass(schoolType);
+        
         OntClass school = model.createClass(base + "school");
         school.addLabel("School", null);
         school.addComment("Ireland schools", null); school.addComment("Ireland schools", "en");
-        primarySchool.addSuperClass(school);
-        secondarySchool.addSuperClass(school);
-        communitySchool.addSuperClass(school);
-        communityCollege.addSuperClass(school);
         
-        DatatypeProperty addressLine1 = model.createDatatypeProperty(base + "addressLine1");
-        addressLine1.addLabel("address line 1", null);addressLine1.addLabel("address line 1", "en");
-        addressLine1.addComment("address line 1", null);addressLine1.addComment("address line 1", "en");
-        addressLine1.setDomain(school);
-        addressLine1.setRange(XSD.xstring);
-        school.addSuperClass(model.createCardinalityRestriction(null, addressLine1, 1));
-        DatatypeProperty addressLine2 = model.createDatatypeProperty(base + "addressLine2");
-        addressLine2.addLabel("address line 2", null);addressLine2.addLabel("address line 2", "en");
-        addressLine2.addComment("address line 2", null);addressLine2.addComment("address line 2", "en");
-        addressLine2.setDomain(school);
-        addressLine2.setRange(XSD.xstring);
-        school.addSuperClass(model.createCardinalityRestriction(null, addressLine2, 1));
-        DatatypeProperty addressLine3 = model.createDatatypeProperty(base + "addressLine3");
-        addressLine3.addLabel("address line 3", null);addressLine3.addLabel("address line 3", "en");
-        addressLine3.addComment("address line 3", null);addressLine3.addComment("address line 3", "en");
-        addressLine3.setDomain(school);
-        addressLine3.setRange(XSD.xstring);
-        school.addSuperClass(model.createCardinalityRestriction(null, addressLine3, 1));
-        DatatypeProperty eirCode = model.createDatatypeProperty(base + "EIR code");
-        eirCode.addLabel("EIR code", null);eirCode.addLabel("EIR code", "en");
-        eirCode.addComment("EIR code", null);eirCode.addComment("EIR code", "en");
-        eirCode.setDomain(school);
-        eirCode.setRange(XSD.xstring);
-        school.addSuperClass(model.createCardinalityRestriction(null, eirCode, 1));
-        DatatypeProperty localAuthority = model.createDatatypeProperty(base + "Local Authority");
+        ObjectProperty hasSchoolType = model.createObjectProperty(base + "hasSchoolType");
+        hasSchoolType.addLabel("has school type", null);hasSchoolType.addLabel("has school type", "en");
+        hasSchoolType.addComment("has school type", null);hasSchoolType.addComment("has school type", "en");
+        hasSchoolType.setDomain(school);
+        hasSchoolType.setRange(schoolType);
+        DatatypeProperty localAuthority = model.createDatatypeProperty(base + "LocalAuthority");
         localAuthority.addLabel("Local Authority", null);localAuthority.addLabel("Local Authority", "en");
         localAuthority.addComment("Local Authority", null);localAuthority.addComment("Local Authority", "en");
         localAuthority.setDomain(school);
         localAuthority.setRange(XSD.xstring);
         school.addSuperClass(model.createCardinalityRestriction(null, localAuthority, 1));
-        DatatypeProperty rollNumber = model.createDatatypeProperty(base + "School Roll no");
+        DatatypeProperty rollNumber = model.createDatatypeProperty(base + "SchoolRollno");
         rollNumber.addLabel("School Roll no", null);rollNumber.addLabel("School Roll no", "en");
         rollNumber.addComment("School Roll no", null);rollNumber.addComment("School Roll no", "en");
         rollNumber.setDomain(school);
         rollNumber.setRange(XSD.xstring);
         school.addSuperClass(model.createCardinalityRestriction(null, rollNumber, 1));
-        
-        DatatypeProperty schoolType = model.createDatatypeProperty(base + "schoolType");
-        schoolType.addLabel("type of school", null);schoolType.addLabel("type of school", "en");
-        schoolType.addComment("type of school", null);schoolType.addComment("type of school", "en");
-        schoolType.setDomain(school);
-        schoolType.setRange(type);
-        school.addSuperClass(model.createCardinalityRestriction(null, schoolType, 1));
-        
-        primarySchool.addSuperClass(model.createHasValueRestriction(null, schoolType, primarySchoolType));
-        secondarySchool.addSuperClass(model.createHasValueRestriction(null, schoolType, secondarySchoolType));
-        communityCollege.addSuperClass(model.createHasValueRestriction(null, schoolType, communityCollegeType));
-        communitySchool.addSuperClass(model.createHasValueRestriction(null, schoolType, communitySchoolType));
-        
+        DatatypeProperty officialSchoolName = model.createDatatypeProperty(base + "OfficialSchoolName");
+        officialSchoolName.addLabel("School Name", null);officialSchoolName.addLabel("School Name", "en");
+        officialSchoolName.addComment("School Name", null);officialSchoolName.addComment("School Name", "en");
+        officialSchoolName.setDomain(school);
+        officialSchoolName.setRange(XSD.xstring);
+        school.addSuperClass(model.createCardinalityRestriction(null, officialSchoolName, 1));
         ObjectProperty hasSchools = model.createObjectProperty(base + "hasSchools");
         hasSchools.addLabel("county has this school", null);hasSchools.addLabel("county has this school", "en");
         hasSchools.addComment("county has this school", null);hasSchools.addComment("county has this school", "en");
@@ -200,11 +215,152 @@ public class Main {
         inCounty.addComment("this school is in this particular county area", null);inCounty.addComment("this school is in this particular county area", "en");
         inCounty.setDomain(school);
         inCounty.setRange(county);
-        hasSchools.addInverseOf(inCounty);inCounty.addInverseOf(hasSchools);
+        hasSchools.addInverseOf(inCounty); inCounty.addInverseOf(hasSchools);
+        
         
         //Ontology completed -- write to file
-        model.write(new FileWriter(groupE_Ontology), "TURTLE");
-        System.out.println("Turtle file for groupE_Ontology created");
+        //model.write(new FileWriter(groupE_Ontology), "TURTLE");
+        //System.out.println("Turtle file for groupE_Ontology created");
+        
+        /*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+        
+        Model firstDataset = RDFDataMgr.loadModel(firstDatasetLocal);
+        
+        ArrayList<Individual> countyList = new ArrayList<Individual>();
+        ArrayList<ArrayList<Object>> countyInfoList = new ArrayList<ArrayList<Object>>();
+        ResIterator countyResIter = firstDataset.listResourcesWithProperty(RDFS.label);
+        Property hasGeometry = firstDataset.getProperty("http://www.opengis.net/ont/geosparql#hasGeometry");
+        Property asWKT = firstDataset.getProperty("http://www.opengis.net/ont/geosparql#asWKT");
+        List<Geometry> geometryList=new ArrayList<Geometry>();
+        List<Float> areaList=new ArrayList<Float>();
+        
+        while (countyResIter.hasNext()) {
+            Resource resources = countyResIter.next();
+
+            NodeIterator labelsIter = firstDataset.listObjectsOfProperty(resources, RDFS.label);
+            List<RDFNode> labels = labelsIter.toList();
+            String enLabel = "";
+
+            for (RDFNode label : labels)
+                if (label.asLiteral().getLanguage().equals("en"))
+                    enLabel = label.asLiteral().getString();
+
+            Resource geometryResource = firstDataset.listObjectsOfProperty(resources, hasGeometry).next().asResource();
+            String wkt = firstDataset.listObjectsOfProperty(geometryResource, asWKT).next().toString();
+            wkt = wkt.substring(0, wkt.indexOf("^^"));
+            OperatorImportFromWkt importer = OperatorImportFromWkt.local();
+            Geometry geometry = importer.execute(WktImportFlags.wktImportDefaults, Geometry.Type.Unknown, wkt, null);
+
+            Individual aCounty = county.createIndividual(base + enLabel);
+            aCounty.addLabel(enLabel, null);
+            aCounty.addLabel(enLabel, "en");
+            float area=(float)geometry.calculateArea2D() * 7365.0f;
+            aCounty.addLiteral(countyArea, area);
+            
+            geometryList.add(geometry);
+            areaList.add(area);
+            
+            countyList.add(aCounty);
+        }
+        
+        for (int i=0;i<countyList.size();i++) {
+            Individual currentCounty = countyList.get(i);
+            Geometry currentCountyGeometry = geometryList.get(i);
+            float currentCountyArea = areaList.get(i);
+            
+            for (int j=0;j<countyList.size();j++) {
+                if (i == j) continue;
+                
+                Individual iterativeCounty =  countyList.get(j);
+                Geometry iterativeCountyGeometry = geometryList.get(j);
+                float iterativeCountyArea = areaList.get(j);
+                
+                if (currentCountyArea > iterativeCountyArea)  currentCounty.addProperty(biggerThan, iterativeCounty);
+                else 										  iterativeCounty.addProperty(biggerThan, currentCounty);
+                
+                OperatorIntersects intersects = OperatorIntersects.local();
+                if (intersects.execute(currentCountyGeometry, iterativeCountyGeometry, SpatialReference.create("WGS84"), null)) 
+                	currentCounty.addProperty(sharesBoundaryWith, iterativeCounty);
+                
+            }
+        }
+        /*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+        
+        Model secondDataset = RDFDataMgr.loadModel(secondDatasetLocal);
+        Property rollNumberProperty = secondDataset.getProperty("http://example.org/data/EducationUT.csv#RollNumber");
+        Property addressLine1Property = secondDataset.getProperty("http://example.org/data/EducationUT.csv#Address1");
+        Property addressLine2Property = secondDataset.getProperty("http://example.org/data/EducationUT.csv#Address2");
+        Property addressLine3Property = secondDataset.getProperty("http://example.org/data/EducationUT.csv#Address3");
+        Property eirCodeProperty = secondDataset.getProperty("http://example.org/data/EducationUT.csv#Eircode");
+        Property latitudeProperty = secondDataset.getProperty("http://example.org/data/EducationUT.csv#Latitude");
+        Property longitudeProperty = secondDataset.getProperty("http://example.org/data/EducationUT.csv#Longitude");
+        Property officialschoolnameProperty = secondDataset.getProperty("http://example.org/data/EducationUT.csv#OfficialSchoolName");
+        Property localauthorityProperty = secondDataset.getProperty("http://example.org/data/EducationUT.csv#LocalAuthority");
+        /*Individual primarySchoolType=primarySchool.createIndividual();
+        Individual secondarySchoolType=secondarySchool.createIndividual();
+        Individual communityCollegeType=communityCollege.createIndividual();
+        Individual communityInstituteType=communityInstitute.createIndividual();
+        Individual othersType=others.createIndividual();*/
+        ResIterator schoolIterator = secondDataset.listResourcesWithProperty(rollNumberProperty);
+        while (schoolIterator.hasNext()) {
+            Resource resource = schoolIterator.next();
+            String currentRollNumber=resource.getProperty(rollNumberProperty).getString();
+            
+            Individual currentLocation=location.asIndividual(/*base+"location_"+currentRollNumber*/);
+            float curentLongitude=resource.getProperty(longitudeProperty).getFloat(); float curentLatitude=resource.getProperty(latitudeProperty).getFloat();
+            currentLocation.addLiteral(latitude, curentLatitude);
+            currentLocation.addLiteral(longitude, curentLongitude);
+            if(resource.getProperty(addressLine1Property)!=null)
+            	currentLocation.addLiteral(addressLine1, resource.getProperty(addressLine1Property).getString());
+            if(resource.getProperty(addressLine2Property)!=null)
+            	currentLocation.addLiteral(addressLine2, resource.getProperty(addressLine2Property).getString());
+            if(resource.getProperty(addressLine3Property)!=null)
+            	currentLocation.addLiteral(addressLine3, resource.getProperty(addressLine3Property).getString());
+            currentLocation.addLiteral(eirCode, resource.getProperty(eirCodeProperty).getString());
+            
+            Individual currentSchool=school.createIndividual(base+"school_"+currentRollNumber);
+            //Individual currentCounty=county.createIndividual();
+            for (int i = 0; i < geometryList.size(); i++) {
+                Geometry geometry = (Geometry)geometryList.get(i);
+                Point point = new Point(curentLongitude, curentLatitude);
+                
+                OperatorWithin within = OperatorWithin.local();
+                if (within.execute(point, geometry, SpatialReference.create("WGS84"), null)) {
+                	currentSchool.addProperty(inCounty, countyList.get(i));
+                	//countyList.get(i).addProperty(hasSchools, currentSchool);
+                    break;
+                }
+            }
+            
+            Individual currentSchoolType=null;
+            String currentSchoolName=resource.getProperty(officialschoolnameProperty).getString();
+            boolean flag=false;
+            if(currentSchoolName.toLowerCase().contains("primary")) {
+            	flag=true;
+            	currentSchoolType=primarySchool.asIndividual();
+            	
+            }else if(currentSchoolName.toLowerCase().contains("secondary")) {
+            	flag=true;
+            	currentSchoolType=secondarySchool.asIndividual();
+            }
+            if(currentSchoolName.toLowerCase().contains("community")) {
+            	flag=true;
+            	if(currentSchoolName.toLowerCase().contains("college")) 
+            		currentSchoolType=communityCollege.asIndividual();
+            	else
+            		currentSchoolType=communityInstitute.asIndividual();
+            }
+            if(! flag) currentSchoolType=others.asIndividual();
+            
+            currentSchool.addProperty(hasSchoolType, currentSchoolType);
+            currentSchool.addProperty(localAuthority, resource.getProperty(localauthorityProperty).getString());
+            currentSchool.addProperty(rollNumber, resource.getProperty(rollNumberProperty).getString());
+            currentSchool.addProperty(officialSchoolName, resource.getProperty(officialschoolnameProperty).getString());
+        }
+        
+        //Ontology completed -- write to file
+        model.write(new FileWriter(groupE_Ontology,true), "TURTLE");
+        System.out.println("GroupE_Ontology instances created");
 	}
 
 }
