@@ -149,34 +149,33 @@ public class Main {
         schoolType.addComment("school type",null);schoolType.addComment("school type","en");
         schoolType.addLabel("school type",null);schoolType.addLabel("school type","en");
         
-        OntClass primarySchool = model.createClass(base + "primarySchool");
-        primarySchool.addComment("primary school of Ireland",null);primarySchool.addComment("primary school of Ireland","en");
-        primarySchool.addLabel("primary school of Ireland",null);primarySchool.addLabel("primary school of Ireland","en");
-        OntClass secondarySchool = model.createClass(base + "secondarySchool");
-        secondarySchool.addComment("secondary school of Ireland",null);secondarySchool.addComment("secondary school of Ireland","en");
-        secondarySchool.addLabel("secondary school of Ireland",null);secondarySchool.addLabel("secondary school of Ireland","en");
-        OntClass communityInstitute = model.createClass(base + "communityInstitute");
-        communityInstitute.addComment("community institute of Ireland",null);communityInstitute.addComment("community institute of Ireland","en");
-        communityInstitute.addLabel("community institute of Ireland",null);communityInstitute.addLabel("community institute of Ireland","en");
-        OntClass communitySchool = model.createClass(base + "communitySchool");
-        communitySchool.addComment("community school of Ireland",null);communitySchool.addComment("community school of Ireland","en");
-        communitySchool.addLabel("community school of Ireland",null);communitySchool.addLabel("community school of Ireland","en");
-        OntClass communityCollege = model.createClass(base + "communityCollege");
-        communityCollege.addComment("community college of Ireland",null);communityCollege.addComment("community college of Ireland","en");
-        communityCollege.addLabel("community college of Ireland",null);communityCollege.addLabel("community college of Ireland","en");
-        communityCollege.addSuperClass(communityInstitute);communitySchool.addSuperClass(communityInstitute);
-        OntClass others = model.createClass(base + "otherInstitute");
-        others.addComment("institute of Ireland",null);others.addComment("institute of Ireland","en");
-        others.addLabel("institute of Ireland",null);others.addLabel("institute of Ireland","en");
+        OntClass primarySchoolType = model.createClass(base + "primarySchoolType");
+        primarySchoolType.addComment("primary school type of Ireland",null);primarySchoolType.addComment("primary school type of Ireland","en");
+        primarySchoolType.addLabel("primary school type of Ireland",null);primarySchoolType.addLabel("primary school type of Ireland","en");
+        OntClass secondarySchoolType = model.createClass(base + "secondarySchoolType");
+        secondarySchoolType.addComment("secondary school of Ireland",null);secondarySchoolType.addComment("secondary school type of Ireland","en");
+        secondarySchoolType.addLabel("secondary school of Ireland",null);secondarySchoolType.addLabel("secondary school type of Ireland","en");
+        OntClass communityInstituteType = model.createClass(base + "communityInstituteType");
+        communityInstituteType.addComment("community institute type of Ireland",null);communityInstituteType.addComment("community institute type of Ireland","en");
+        communityInstituteType.addLabel("community institute type of Ireland",null);communityInstituteType.addLabel("community institute type of Ireland","en");
+        OntClass communitySchoolType = model.createClass(base + "communitySchoolType");
+        communitySchoolType.addComment("community school type of Ireland",null);communitySchoolType.addComment("community school type of Ireland","en");
+        communitySchoolType.addLabel("community school type of Ireland",null);communitySchoolType.addLabel("community school type of Ireland","en");
+        OntClass communityCollegeType = model.createClass(base + "communityCollegeType");
+        communitySchoolType.addComment("community college type of Ireland",null);communitySchoolType.addComment("community college type of Ireland","en");
+        communitySchoolType.addLabel("community college type of Ireland",null);communitySchoolType.addLabel("community college type of Ireland","en");
+        communitySchoolType.addSuperClass(communityInstituteType);communityCollegeType.addSuperClass(communityInstituteType);
+        OntClass othersType = model.createClass(base + "otherInstituteType");
+        othersType.addComment("institute type of Ireland",null);othersType.addComment("institute type of Ireland","en");
+        othersType.addLabel("institute type of Ireland",null);othersType.addLabel("institute type of Ireland","en");
         
-        primarySchool.addDisjointWith(secondarySchool);  secondarySchool.addDisjointWith(primarySchool); 
-        others.addDisjointWith(primarySchool);others.addDisjointWith(secondarySchool);others.addDisjointWith(communityCollege);others.addDisjointWith(communityInstitute);
+        primarySchoolType.addDisjointWith(secondarySchoolType);  secondarySchoolType.addDisjointWith(primarySchoolType); 
+        othersType.addDisjointWith(primarySchoolType);othersType.addDisjointWith(secondarySchoolType);othersType.addDisjointWith(communityCollegeType);othersType.addDisjointWith(communityInstituteType);
         
-        primarySchool.addSuperClass(schoolType);
-        secondarySchool.addSuperClass(schoolType);
-        communityInstitute.addSuperClass(schoolType);
-        communityInstitute.addSuperClass(schoolType);
-        others.addSuperClass(schoolType);
+        primarySchoolType.addSuperClass(schoolType);
+        secondarySchoolType.addSuperClass(schoolType);
+        communityInstituteType.addSuperClass(schoolType);
+        othersType.addSuperClass(schoolType);
         
         OntClass school = model.createClass(base + "school");
         school.addLabel("School", null);
@@ -217,6 +216,55 @@ public class Main {
         inCounty.setRange(county);
         hasSchools.addInverseOf(inCounty); inCounty.addInverseOf(hasSchools);
         
+        OntClass primarySchool = model.createClass(base + "primarySchool");
+        primarySchool.addLabel("Ireland Primary School", null);primarySchool.addLabel("Ireland Primary schools", "en");
+        primarySchool.addComment("Ireland Primary schools", null); primarySchool.addComment("Ireland Primary schools", "en");
+        primarySchool.addSuperClass(school);
+        ObjectProperty hasPrimarySchoolType = model.createObjectProperty(base + "hasPrimarySchoolType");
+        hasPrimarySchoolType.addLabel("has primary school type", null);hasPrimarySchoolType.addLabel("has primary school type", "en");
+        hasPrimarySchoolType.addComment("has primary school type", null);hasPrimarySchoolType.addComment("has primary school type", "en");
+        hasPrimarySchoolType.setDomain(primarySchool);
+        hasPrimarySchoolType.setRange(primarySchoolType);
+        
+        OntClass secondarySchool = model.createClass(base + "secondarySchool");
+        secondarySchool.addLabel("Ireland Secondary School", null);secondarySchool.addLabel("Ireland Secondary schools", "en");
+        secondarySchool.addComment("Ireland Secondary schools", null); secondarySchool.addComment("Ireland Secondary schools", "en");
+        secondarySchool.addSuperClass(school);
+        ObjectProperty hasSecondarySchoolType = model.createObjectProperty(base + "hasSecondarySchoolType");
+        hasSecondarySchoolType.addLabel("has Secondary school type", null);hasSecondarySchoolType.addLabel("has Secondary school type", "en");
+        hasSecondarySchoolType.addComment("has Secondary school type", null);hasSecondarySchoolType.addComment("has Secondary school type", "en");
+        hasSecondarySchoolType.setDomain(secondarySchool);
+        hasSecondarySchoolType.setRange(secondarySchoolType);
+        
+        OntClass communitySchool = model.createClass(base + "communitySchool");
+        communitySchool.addLabel("Ireland Community School", null);communitySchool.addLabel("Ireland Community schools", "en");
+        communitySchool.addComment("Ireland Community schools", null); communitySchool.addComment("Ireland Community schools", "en");
+        communitySchool.addSuperClass(school);
+        ObjectProperty hasCommunitySchoolType = model.createObjectProperty(base + "hasCommunitySchoolType");
+        hasCommunitySchoolType.addLabel("has community school type", null);hasCommunitySchoolType.addLabel("has community school type", "en");
+        hasCommunitySchoolType.addComment("has community school type", null);hasCommunitySchoolType.addComment("has community school type", "en");
+        hasCommunitySchoolType.setDomain(communitySchool);
+        hasCommunitySchoolType.setRange(communitySchoolType);
+        
+        OntClass communityCollege = model.createClass(base + "communityCollegeSchool");
+        communityCollege.addLabel("community college School", null);communityCollege.addLabel("community college schools", "en");
+        communityCollege.addComment("community college schools", null); communityCollege.addComment("community college schools", "en");
+        communityCollege.addSuperClass(school);
+        ObjectProperty hasCommunityCollegeType = model.createObjectProperty(base + "hasCommunityCollegechoolType");
+        hasCommunityCollegeType.addLabel("has Community College school type", null);hasCommunityCollegeType.addLabel("has Community College school type", "en");
+        hasCommunityCollegeType.addComment("has Community College school type", null);hasCommunityCollegeType.addComment("has Community College school type", "en");
+        hasCommunityCollegeType.setDomain(communityCollege);
+        hasCommunityCollegeType.setRange(communityCollegeType);
+
+        OntClass othersSchool = model.createClass(base + "othersSchool");
+        othersSchool.addLabel("Ireland others School", null);othersSchool.addLabel("Ireland others schools", "en");
+        othersSchool.addComment("Ireland others schools", null); othersSchool.addComment("Ireland others schools", "en");
+        othersSchool.addSuperClass(school);
+        ObjectProperty hasOthersSchoolType = model.createObjectProperty(base + "hasOthersSchoolType");
+        hasOthersSchoolType.addLabel("has Others school type", null);hasOthersSchoolType.addLabel("has Others school type", "en");
+        hasOthersSchoolType.addComment("has Others school type", null);hasOthersSchoolType.addComment("has Others school type", "en");
+        hasOthersSchoolType.setDomain(othersSchool);
+        hasOthersSchoolType.setRange(othersType);
         
         //Ontology completed -- write to file
         //model.write(new FileWriter(groupE_Ontology), "TURTLE");
@@ -318,7 +366,48 @@ public class Main {
             	currentLocation.addLiteral(addressLine3, resource.getProperty(addressLine3Property).getString());
             currentLocation.addLiteral(eirCode, resource.getProperty(eirCodeProperty).getString());
             
-            Individual currentSchool=school.createIndividual(base+"school_"+currentRollNumber);
+            //Individual currentSchool=school.createIndividual(base+"school_"+currentRollNumber);
+            Individual currentSchool=null;
+            Individual currentSchoolType=null;
+            String currentSchoolName=resource.getProperty(officialschoolnameProperty).getString();
+            boolean flag=false;
+            if(currentSchoolName.toLowerCase().contains("primary")) {
+            	flag=true;
+            	currentSchool=primarySchool.createIndividual(base+"school_"+currentRollNumber);
+            	currentSchoolType=primarySchoolType.asIndividual();
+            	currentSchool.addProperty(hasPrimarySchoolType, currentSchoolType);
+            	
+            }else if(currentSchoolName.toLowerCase().contains("secondary")) {
+            	flag=true;
+            	currentSchool=secondarySchool.createIndividual(base+"school_"+currentRollNumber);
+            	currentSchoolType=secondarySchoolType.asIndividual();
+            	currentSchool.addProperty(hasSchoolType, currentSchoolType);
+            }
+            if(currentSchoolName.toLowerCase().contains("community")) {
+            	flag=true;
+            	if(currentSchoolName.toLowerCase().contains("college")) 
+            		{
+            		currentSchool=communityCollege.createIndividual(base+"school_"+currentRollNumber);
+                	currentSchoolType=communityCollegeType.asIndividual();
+                	currentSchool.addProperty(hasCommunityCollegeType, currentSchoolType);
+            		}
+            	else {
+            		currentSchool=communitySchool.createIndividual(base+"school_"+currentRollNumber);
+                	currentSchoolType=communitySchoolType.asIndividual();
+                	currentSchool.addProperty(hasCommunitySchoolType, currentSchoolType);
+            	}
+            }
+            if(! flag) {
+            	currentSchool=othersSchool.createIndividual(base+"school_"+currentRollNumber);
+            	currentSchoolType=othersType.asIndividual();
+            	currentSchool.addProperty(hasOthersSchoolType, currentSchoolType);
+            }
+            
+            
+            currentSchool.addProperty(localAuthority, resource.getProperty(localauthorityProperty).getString());
+            currentSchool.addProperty(rollNumber, resource.getProperty(rollNumberProperty).getString());
+            currentSchool.addProperty(officialSchoolName, resource.getProperty(officialschoolnameProperty).getString());
+            
             //Individual currentCounty=county.createIndividual();
             for (int i = 0; i < geometryList.size(); i++) {
                 Geometry geometry = (Geometry)geometryList.get(i);
@@ -332,30 +421,7 @@ public class Main {
                 }
             }
             
-            Individual currentSchoolType=null;
-            String currentSchoolName=resource.getProperty(officialschoolnameProperty).getString();
-            boolean flag=false;
-            if(currentSchoolName.toLowerCase().contains("primary")) {
-            	flag=true;
-            	currentSchoolType=primarySchool.asIndividual();
-            	
-            }else if(currentSchoolName.toLowerCase().contains("secondary")) {
-            	flag=true;
-            	currentSchoolType=secondarySchool.asIndividual();
-            }
-            if(currentSchoolName.toLowerCase().contains("community")) {
-            	flag=true;
-            	if(currentSchoolName.toLowerCase().contains("college")) 
-            		currentSchoolType=communityCollege.asIndividual();
-            	else
-            		currentSchoolType=communityInstitute.asIndividual();
-            }
-            if(! flag) currentSchoolType=others.asIndividual();
             
-            currentSchool.addProperty(hasSchoolType, currentSchoolType);
-            currentSchool.addProperty(localAuthority, resource.getProperty(localauthorityProperty).getString());
-            currentSchool.addProperty(rollNumber, resource.getProperty(rollNumberProperty).getString());
-            currentSchool.addProperty(officialSchoolName, resource.getProperty(officialschoolnameProperty).getString());
         }
         
         //Ontology completed -- write to file
