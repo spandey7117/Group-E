@@ -98,24 +98,28 @@ public class Main {
         addressLine1.addComment("address line 1", null);addressLine1.addComment("address line 1", "en");
         addressLine1.setDomain(location);
         addressLine1.setRange(XSD.xstring);
+        location.addSuperClass(model.createCardinalityRestriction(null, addressLine1, 1));
         //school.addSuperClass(model.createCardinalityRestriction(null, addressLine1, 1));
         DatatypeProperty addressLine2 = model.createDatatypeProperty(base + "addressLine2");
         addressLine2.addLabel("address line 2", null);addressLine2.addLabel("address line 2", "en");
         addressLine2.addComment("address line 2", null);addressLine2.addComment("address line 2", "en");
         addressLine2.setDomain(location);
         addressLine2.setRange(XSD.xstring);
+        location.addSuperClass(model.createCardinalityRestriction(null, addressLine2, 1));
         //school.addSuperClass(model.createCardinalityRestriction(null, addressLine2, 1));
         DatatypeProperty addressLine3 = model.createDatatypeProperty(base + "addressLine3");
         addressLine3.addLabel("address line 3", null);addressLine3.addLabel("address line 3", "en");
         addressLine3.addComment("address line 3", null);addressLine3.addComment("address line 3", "en");
         addressLine3.setDomain(location);
         addressLine3.setRange(XSD.xstring);
+        location.addSuperClass(model.createCardinalityRestriction(null, addressLine3, 1));
         //school.addSuperClass(model.createCardinalityRestriction(null, addressLine3, 1));
         DatatypeProperty eirCode = model.createDatatypeProperty(base + "EIRcode");
         eirCode.addLabel("EIR code", null);eirCode.addLabel("EIR code", "en");
         eirCode.addComment("EIR code", null);eirCode.addComment("EIR code", "en");
         eirCode.setDomain(location);
         eirCode.setRange(XSD.xstring);
+        location.addSuperClass(model.createCardinalityRestriction(null, eirCode, 1));
         //school.addSuperClass(model.createCardinalityRestriction(null, eirCode, 1));
         
         OntClass county = model.createClass(base + "County");
@@ -145,7 +149,7 @@ public class Main {
         biggerThan.addInverseOf(smallerThan);smallerThan.addInverseOf(biggerThan);
         /*-----------------------------------------------------------------------------------------------------------------------------------------------------------*/
         
-        OntClass schoolType = model.createClass(base + "schoolType");
+        /*OntClass schoolType = model.createClass(base + "schoolType");
         schoolType.addComment("school type",null);schoolType.addComment("school type","en");
         schoolType.addLabel("school type",null);schoolType.addLabel("school type","en");
         
@@ -175,7 +179,7 @@ public class Main {
         primarySchoolType.addSuperClass(schoolType);
         secondarySchoolType.addSuperClass(schoolType);
         communityInstituteType.addSuperClass(schoolType);
-        othersType.addSuperClass(schoolType);
+        othersType.addSuperClass(schoolType);*/
         
         OntClass school = model.createClass(base + "school");
         school.addLabel("School", null);
@@ -185,7 +189,7 @@ public class Main {
         hasSchoolType.addLabel("has school type", null);hasSchoolType.addLabel("has school type", "en");
         hasSchoolType.addComment("has school type", null);hasSchoolType.addComment("has school type", "en");
         hasSchoolType.setDomain(school);
-        hasSchoolType.setRange(schoolType);
+        //hasSchoolType.setRange(schoolType);
         DatatypeProperty localAuthority = model.createDatatypeProperty(base + "LocalAuthority");
         localAuthority.addLabel("Local Authority", null);localAuthority.addLabel("Local Authority", "en");
         localAuthority.addComment("Local Authority", null);localAuthority.addComment("Local Authority", "en");
@@ -220,51 +224,51 @@ public class Main {
         primarySchool.addLabel("Ireland Primary School", null);primarySchool.addLabel("Ireland Primary schools", "en");
         primarySchool.addComment("Ireland Primary schools", null); primarySchool.addComment("Ireland Primary schools", "en");
         primarySchool.addSuperClass(school);
-        ObjectProperty hasPrimarySchoolType = model.createObjectProperty(base + "hasPrimarySchoolType");
+        /*ObjectProperty hasPrimarySchoolType = model.createObjectProperty(base + "hasPrimarySchoolType");
         hasPrimarySchoolType.addLabel("has primary school type", null);hasPrimarySchoolType.addLabel("has primary school type", "en");
         hasPrimarySchoolType.addComment("has primary school type", null);hasPrimarySchoolType.addComment("has primary school type", "en");
-        hasPrimarySchoolType.setDomain(primarySchool);
-        hasPrimarySchoolType.setRange(primarySchoolType);
+        hasPrimarySchoolType.setDomain(primarySchool);*/
+        //hasPrimarySchoolType.setRange(primarySchoolType);
         
         OntClass secondarySchool = model.createClass(base + "secondarySchool");
         secondarySchool.addLabel("Ireland Secondary School", null);secondarySchool.addLabel("Ireland Secondary schools", "en");
         secondarySchool.addComment("Ireland Secondary schools", null); secondarySchool.addComment("Ireland Secondary schools", "en");
         secondarySchool.addSuperClass(school);
-        ObjectProperty hasSecondarySchoolType = model.createObjectProperty(base + "hasSecondarySchoolType");
+        /*ObjectProperty hasSecondarySchoolType = model.createObjectProperty(base + "hasSecondarySchoolType");
         hasSecondarySchoolType.addLabel("has Secondary school type", null);hasSecondarySchoolType.addLabel("has Secondary school type", "en");
         hasSecondarySchoolType.addComment("has Secondary school type", null);hasSecondarySchoolType.addComment("has Secondary school type", "en");
-        hasSecondarySchoolType.setDomain(secondarySchool);
-        hasSecondarySchoolType.setRange(secondarySchoolType);
+        hasSecondarySchoolType.setDomain(secondarySchool);*/
+        //hasSecondarySchoolType.setRange(secondarySchoolType);
         
         OntClass communitySchool = model.createClass(base + "communitySchool");
         communitySchool.addLabel("Ireland Community School", null);communitySchool.addLabel("Ireland Community schools", "en");
         communitySchool.addComment("Ireland Community schools", null); communitySchool.addComment("Ireland Community schools", "en");
         communitySchool.addSuperClass(school);
-        ObjectProperty hasCommunitySchoolType = model.createObjectProperty(base + "hasCommunitySchoolType");
+        /*ObjectProperty hasCommunitySchoolType = model.createObjectProperty(base + "hasCommunitySchoolType");
         hasCommunitySchoolType.addLabel("has community school type", null);hasCommunitySchoolType.addLabel("has community school type", "en");
         hasCommunitySchoolType.addComment("has community school type", null);hasCommunitySchoolType.addComment("has community school type", "en");
-        hasCommunitySchoolType.setDomain(communitySchool);
-        hasCommunitySchoolType.setRange(communitySchoolType);
+        hasCommunitySchoolType.setDomain(communitySchool);*/
+        //hasCommunitySchoolType.setRange(communitySchoolType);
         
         OntClass communityCollege = model.createClass(base + "communityCollegeSchool");
         communityCollege.addLabel("community college School", null);communityCollege.addLabel("community college schools", "en");
         communityCollege.addComment("community college schools", null); communityCollege.addComment("community college schools", "en");
         communityCollege.addSuperClass(school);
-        ObjectProperty hasCommunityCollegeType = model.createObjectProperty(base + "hasCommunityCollegechoolType");
+        /*ObjectProperty hasCommunityCollegeType = model.createObjectProperty(base + "hasCommunityCollegechoolType");
         hasCommunityCollegeType.addLabel("has Community College school type", null);hasCommunityCollegeType.addLabel("has Community College school type", "en");
         hasCommunityCollegeType.addComment("has Community College school type", null);hasCommunityCollegeType.addComment("has Community College school type", "en");
-        hasCommunityCollegeType.setDomain(communityCollege);
-        hasCommunityCollegeType.setRange(communityCollegeType);
+        hasCommunityCollegeType.setDomain(communityCollege);*/
+        //hasCommunityCollegeType.setRange(communityCollegeType);
 
         OntClass othersSchool = model.createClass(base + "othersSchool");
         othersSchool.addLabel("Ireland others School", null);othersSchool.addLabel("Ireland others schools", "en");
         othersSchool.addComment("Ireland others schools", null); othersSchool.addComment("Ireland others schools", "en");
         othersSchool.addSuperClass(school);
-        ObjectProperty hasOthersSchoolType = model.createObjectProperty(base + "hasOthersSchoolType");
+        /*ObjectProperty hasOthersSchoolType = model.createObjectProperty(base + "hasOthersSchoolType");
         hasOthersSchoolType.addLabel("has Others school type", null);hasOthersSchoolType.addLabel("has Others school type", "en");
         hasOthersSchoolType.addComment("has Others school type", null);hasOthersSchoolType.addComment("has Others school type", "en");
-        hasOthersSchoolType.setDomain(othersSchool);
-        hasOthersSchoolType.setRange(othersType);
+        hasOthersSchoolType.setDomain(othersSchool);*/
+        //hasOthersSchoolType.setRange(othersType);
         
         //Ontology completed -- write to file
         //model.write(new FileWriter(groupE_Ontology), "TURTLE");
@@ -374,33 +378,33 @@ public class Main {
             if(currentSchoolName.toLowerCase().contains("primary")) {
             	flag=true;
             	currentSchool=primarySchool.createIndividual(base+"school_"+currentRollNumber);
-            	currentSchoolType=primarySchoolType.asIndividual();
-            	currentSchool.addProperty(hasPrimarySchoolType, currentSchoolType);
+            	//currentSchoolType=primarySchoolType.asIndividual();
+            	//currentSchool.addProperty(hasPrimarySchoolType, currentSchoolType);
             	
             }else if(currentSchoolName.toLowerCase().contains("secondary")) {
             	flag=true;
             	currentSchool=secondarySchool.createIndividual(base+"school_"+currentRollNumber);
-            	currentSchoolType=secondarySchoolType.asIndividual();
-            	currentSchool.addProperty(hasSchoolType, currentSchoolType);
+            	//currentSchoolType=secondarySchoolType.asIndividual();
+            	//currentSchool.addProperty(hasSecondarySchoolType, currentSchoolType);
             }
             if(currentSchoolName.toLowerCase().contains("community")) {
             	flag=true;
             	if(currentSchoolName.toLowerCase().contains("college")) 
             		{
             		currentSchool=communityCollege.createIndividual(base+"school_"+currentRollNumber);
-                	currentSchoolType=communityCollegeType.asIndividual();
-                	currentSchool.addProperty(hasCommunityCollegeType, currentSchoolType);
+                	//currentSchoolType=communityCollegeType.asIndividual();
+                	//currentSchool.addProperty(hasCommunityCollegeType, currentSchoolType);
             		}
             	else {
             		currentSchool=communitySchool.createIndividual(base+"school_"+currentRollNumber);
-                	currentSchoolType=communitySchoolType.asIndividual();
-                	currentSchool.addProperty(hasCommunitySchoolType, currentSchoolType);
+                	//currentSchoolType=communitySchoolType.asIndividual();
+                	//currentSchool.addProperty(hasCommunitySchoolType, currentSchoolType);
             	}
             }
             if(! flag) {
             	currentSchool=othersSchool.createIndividual(base+"school_"+currentRollNumber);
-            	currentSchoolType=othersType.asIndividual();
-            	currentSchool.addProperty(hasOthersSchoolType, currentSchoolType);
+            	//currentSchoolType=othersType.asIndividual();
+            	//currentSchool.addProperty(hasOthersSchoolType, currentSchoolType);
             }
             
             
